@@ -44,7 +44,12 @@ Main components:
 
 1. Install the following:
 	```
-	sudo apt-get install git vim net-tools arp-scan python3-pip conntrack docker-compose maven python3-tk
+	sudo apt-get install git vim net-tools arp-scan python3-pip conntrack maven python3-tk
+	```
+
+111. Always run this after startup
+	```
+	sudo xhost +
 	```
 
 11. Setup directory structure
@@ -72,10 +77,10 @@ Main components:
 	git clone https://github.com/robotarium/tag_tracker  
 	git clone https://github.com/robotarium/python_tag_tracker
 	git clone https://github.com/robotarium/matlab-java-client
-	git clone https://gatech.github.edu/pglotfelter6/robotarium_matlab_docker  
-	git clone https://gatech.github.edu/pglotfelter6/robotarium_matlab_backend
+	git clone https://github.gatech.edu/pglotfelter6/robotarium_matlab_docker  
+	git clone https://github.gatech.edu/pglotfelter6/robotarium_matlab_backend
 	git clone https://github.gatech.edu/pglotfelter6/matlab_node
-	git clone https://gatech.github.edu/pglotfelter6/robotarium_python_backend
+	git clone https://github.gatech.edu/pglotfelter6/robotarium_python_backend
 	```
 
 4. In mqtt_broker (this should run all the time)
@@ -85,11 +90,9 @@ Main components:
 		cd ~/git/mqtt_broker/docker
 		./docker_build.sh
 		```
+	Run broker on start up should be taken care of.
 
-	2. Run broker on start up:
-		```
-		Automagical procedure goes here.
-		```		
+	Test with `sudo docker ps`
 
 5. Install vizier
 	```
@@ -102,7 +105,7 @@ Main components:
 	1. Turn a robot and wait; if the MQTT broker is running then
 
 		```
-		python3 -m vizier.vizier --host 192.168.1.8   
+		python3 -m vizier.vizier --host 192.168.1.8 --get "topic/subtopic"
 		python3 -m vizier.vizier --host 192.168.1.8 --publish matlab_api/27 '{"v": 0.0, "w": 1.0}'  
 		```
 
@@ -127,11 +130,17 @@ Main components:
 	5. Run container using the following
 
 		```
-		sudo xhost +
-		sudo docker_run_base.sh '/home/robotarium/software/matlab
+		sudo docker_run_base.sh '/home/robotarium/software/matlab'
+		```
+		
+	55. In the docker container do the following:
+
+		```
+		cd /matlab
 		./install	
 		```
-	6. Go through the install; skip image processing, dps
+	6. Go through the install; must include Optimization
+	66. Enable symbolic links
 	7. Enter name as root
 	8. Run matlab in container
 		```
@@ -218,11 +227,12 @@ Main components:
 	1. Prior to Install    
 		
 		```
-		cd ~/git/robotarium_python_backedn_
+		cd ~/git/robotarium_python_backend
 		cd robotarium-python-simulator  
 		git submodule init  
 		git submodule update  	
 		git pull origin master  
+		cd ../
 		./run_before_install.sh
 		```
 		
