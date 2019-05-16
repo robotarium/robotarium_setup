@@ -44,7 +44,7 @@ Main components:
 
 1. Install the following:
 	```
-	sudo apt-get install git vim net-tools arp-scan python3-pip conntrack docker-compose
+	sudo apt-get install git vim net-tools arp-scan python3-pip conntrack docker-compose maven python3-tk
 	```
 
 11. Setup directory structure
@@ -68,24 +68,45 @@ Main components:
 	cd git   
 	git clone https://github.com/robotarium/gritsbot_2   
 	git clone https://github.com/robotarium/vizier  
-	git clone https://github.gatech.edu/pglotfelter6/robotarium_nodes_docker  
+	git clone https://github.com/robotarium/mqtt_broker
 	git clone https://github.com/robotarium/tag_tracker  
+	git clone https://github.com/robotarium/python_tag_tracker
+	git clone https://github.com/robotarium/matlab-java-client
 	git clone https://gatech.github.edu/pglotfelter6/robotarium_matlab_docker  
 	git clone https://gatech.github.edu/pglotfelter6/robotarium_matlab_backend
+	git clone https://github.gatech.edu/pglotfelter6/matlab_node
+	git clone https://gatech.github.edu/pglotfelter6/robotarium_python_backend
 	```
 
-4. Install vizier
+4. In mqtt_broker (this should run all the time)
+
+	1. Setup MQTT broker  
+		```
+		cd ~/git/mqtt_broker/docker
+		./docker_build.sh
+		```
+
+	2. Run broker on start up:
+		```
+		Automagical procedure goes here.
+		```		
+
+5. Install vizier
 	```
 	cd ~/git/vizier
 	python3 -m pip install -e .
 	```
+	
+	Test: 
 
-5. In robotarium_nodes_docker (this runs all the time)
+	1. Turn a robot and wait; if the MQTT broker is running then
 
-	1. Setup MQTT broker  
 		```
-		sudo docker pull emqx/emqx:latest		
+		python3 -m vizier.vizier --host 192.168.1.8   
+		python3 -m vizier.vizier --host 192.168.1.8 --publish matlab_api/27 '{"v": 0.0, "w": 1.0}'  
 		```
+
+
 6. Create MATLAB Docker Container
 	1. Download MATLAB Linux installer using student credentials  
 	2. Create location for install  
@@ -104,6 +125,7 @@ Main components:
 		sudo ./docker_build_base.sh
 		```
 	5. Run container using the following
+
 		```
 		sudo xhost +
 		sudo docker_run_base.sh '/home/robotarium/software/matlab
@@ -134,6 +156,7 @@ Main components:
 		```
 
 7. Setting up the MATLAB Backend to control the robots
+
 	```
 	cd ~/git/robotarium_matlab_backend  
 	cd robotarium-matlab-simulator  
@@ -143,26 +166,75 @@ Main components:
 	```
 
 	To run:
+
 	```
 	cd ~/git/robotarium_matlab_docker  
 	./docker_run.sh  
 	```
 	
 	Launch matlab
+
 	```
 	run('server_init.m')
 	```
 
+8. Vizier implementation in java for MATLAB (default included in `robotarium_matlab_backend`, use this for updates):
 
-# Interaction with Robots
+	```
+	cd ~/git/matlab-java-client
+	./build.sh
+	cd ./target
+ 	cp *.jar ~/git/matlab_node/vizier_java.jar	
+	cd ~/git/matlab_node/
+	```
 
-1. Turn a robot and wait; if the MQTT broker is running then
+	Build the jar:
+
 	```
-	python3 -m vizier.vizier --host 192.168.1.8   
-	python3 -m vizier.vizier --host 192.168.1.8 --publish matlab_api/27 '{"v": 0.0, "w": 1.0}'  
+	./make_repo.sh vizier_java.jar
+	./build.sh
+	cd target
+	mv *.jar ~/git/robotarium_matlab_backend/jars/matlab_node.jar
 	```
-	
+
+9. Setup the Tracker:
+	1. Camera-based tracking (Dependencies are included in the container):
+
+		Install:
+
+		```
+		cd ~/git/python_tag_tracker/docker
+		./docker_build.sh
+		```
+
+		Test it with:
+
+		```		
+		./docker_run.sh  
+		```  
+
+10. Python Backend Setup  
+
+	1. Prior to Install    
 		
+		```
+		cd ~/git/robotarium_python_backedn_
+		cd robotarium-python-simulator  
+		git submodule init  
+		git submodule update  	
+		git pull origin master  
+		./run_before_install.sh
+		```
+		
+	2. Install
+		
+		```
+		cd ./robotarium_python_simulator
+		python3 -m pip install -e .
+		```	
+
+# Startup Procedure
+
 
 # TODO 
 
@@ -172,3 +244,19 @@ Main components:
 2. Clean up tag_tracker repo
 3. On mqtt maybe a emqx directory
 4. Check submodule clean up on robotarium_matlab_backend
+5. restructure python backend
+
+## Workstation
+
+1. Launch broker on startup. 
+
+
+## Instructions
+
+1. Vicon instructions
+2. Add tests to each section
+3. Organize sections into primary components 
+
+## QOL
+
+1. Make it easy to change host ip in everything
