@@ -19,61 +19,49 @@ Setup a robotarium from scratch!
 
 ## Software Stuffs
 Starting from a base Ubuntu 18.04 install....
+(minimum install)
 ### Installing basic dependencies:
-1. git
-> sudo apt-get install git
-2. vim
-> sudo apt-get install vim
-3. Docker:
+1. various packages
+> sudo apt-get install git vim net-tools arp-scan python3-pip conntrack maven docker-compose
+2. Docker:
    * Visit the [Docker CE for Ubuntu](https://docs.docker.com/install/linux/docker-ce/ubuntu/) website. Use the instructions under "Install using the repository option"
 > sudo groupadd docker
 
-> sudo usermod -aG docker $USER
+> sudo usermod -aG docker $USER //logout and login to take effect
 
-4. net-tools
-> sudo apt-get install net-tools
-5. arp-scan
-> sudo apt-get install arp-scan
-6. python3: should be already installed
-7. pip
-> sudo apt-get install python3-pip
-8. conntrack
-> sudo apt-get install conntrack
-9. docker-compose
-> sudo apt-get install docker-compose
-### Clone the following repositories:
+### Clone the following repositories: (ensure access to all github gatech accounts)
 Create a directory ~/git. Clone the following repos here:
-
-7. gritsbot_2 repository
+```
 > git clone https://github.com/robotarium/gritsbot_2
-8. Vizier node
 > git clone https://github.com/robotarium/vizier
-   * Enter vizier folder and run: (-e option for developer mode)
-   > python3 -m pip install -e .
-9. Get robotarium nodes docker
 > git clone https://github.gatech.edu/pglotfelter6/robotarium_nodes_docker
-
-10. Get tag tracker repository
 > git clone https://github.com/robotarium/tag_tracker
-
-11. Robotarium matlab docker
-
-> git clone https://gatech.github.edu/pglotfelter6/robotarium_matlab_docker
-
-12. Robotarium matlab backend
-
+> git clone https://github.gatech.edu/pglotfelter6/robotarium_matlab_docker
 > git clone https://github.gatech.edu/pglotfelter6/robotarium_matlab_backend
+> git clone https://github.gatech.edu/pglotfelter6/matlab_node
+> git clone https://github.com/robotarium/vizier_java
+> git clone https://github.com/robotarium/mqtt_broker
+> git clone https://github.com/robotarium/python_tag_tracker
+
+```
 
 ### Setting Up MQTT Broker
 
-> sudo docker pull emqx/emqx:latest
+```
+cd ~/git/mqtt_broker/docker
+./docker_build.sh
+sudo docker ps // just to check if it is running
+```
 
-> sudo docker images // just to check : emqx should show up
-
+### Setup Vizier
+```
+cd ~/git/vizier
+python3 -m pip install -e .
+```
 
 ### Creating a docker container for MATLAB
 
-1. Download latest MATLAB installer for Linux (zip file)
+1. Download MATLAB installer for Linux 2018b(zip file)
 2. Put matlab in a nice folder
 > mkdir ~/software && cd ~/software && mkdir matlab && cd matlab
 
@@ -86,7 +74,7 @@ Create a directory ~/git. Clone the following repos here:
 4. Open docker_run_base.sh (inside git/robotarium_matlab_docker) Ensure mac address never changes, next line is for X11 forwarding (purely explanatory)
 5. Run docker_run_base:
 
-> sudo xhost+   (every time you restart your system)
+> sudo xhost +   (note the space. every time you restart your system)
 
 > sudo ./docker_run_base.sh "/home/#USER_NAME/software/matlab" // path to your matlab installation files
 
@@ -96,11 +84,11 @@ Create a directory ~/git. Clone the following repos here:
 > ./install
 
 8. You should see a matlab splash pop up for matlab installation. Enter user account and follow through instructions. It will complain about the lack of a browser, and give you a link. Copy that to your browser. Once approved, go back to the docker and click next.
-9. Only use MATLAB, Optimization toolbox, Statistics and ML Toolbox, Symbolic Math tool box, mapping toolbox. Click next, add symlink (tick the box). Once installed, activate matlab. Login name: root.
+9. Only use MATLAB, Aerospace Toolbox, Curve Fitting, Optimization toolbox, Statistics and ML Toolbox, Symbolic Math tool box, mapping toolbox. Click next, add symlink (tick the box). Once installed, activate matlab. Login name: root.
 10. DO NOT EXIT THE CONTAINER
 11. Check matlab works by typing "matlab" in command window.
 12. Open preferences, keyboard, shortcut: change to windows default set.
-13. Open another terminal (inside the container).
+13. Open another terminal on the host machine.
 
 > sudo docker ps
 
@@ -111,7 +99,7 @@ Create a directory ~/git. Clone the following repos here:
 
 16. Check its presence in sudo docker images (on host machine)
 17. Now you can safely exit the docker container.
-18. back to ~/git/robotarium_matlab_backend
+18. back to ~/git/robotarium_matlab_docker
 
 > ./docker_run.sh  // before this see step 1 of Setting up MATLAB backend section i.e., create ~/user_code
 
@@ -138,18 +126,67 @@ Create a directory ~/git. Clone the following repos here:
 
 2. This opens up matlab. Simulator files should be in it.
 
-### Install Python Backend
+### Java-Vizier
+
+	```
+	cd ~/git/vizier_java
+	./build.sh
+	cd ./target
+ 	cp *.jar ~/git/matlab_node/vizier_java.jar
+	cd ~/git/matlab_node/
+	```
+
+	Build the jar:
+
+	```
+	./make_repo.sh vizier_java.jar
+	./build.sh
+	cd target
+	mv *.jar ~/git/robotarium_matlab_backend/jars/matlab_node.jar
+	```
 
 ### Set up the tracker
+1. Install
+
+  ```
+  cd ~/git/python_tag_tracker/docker
+  ./docker_build.sh 192.168.1.8 1884
+  ```
+2.	Test it with:
+
+		```		
+		./docker_run.sh  
+		```  
+
+### Python Backend Setup
+1. Setup    
+
+  ```
+  cd ~/git/robotarium_python_backend
+  cd robotarium-python-simulator  
+  git submodule init  
+  git submodule update  	
+  git pull origin master  
+  cd ../
+  ./run_before_install.sh
+  ```
+
+2. Install
+
+  ```
+  cd ./robotarium_python_simulator
+  python3 -m pip install -e .
+  ```
 
 ### Robot Firmware
 
+### Run 
 ### Basic testing with the robots
 
 1. When robots turn on, arp-scan for the robot to see if it is on the wifi
 > sudo arp-scan -I eno1 -l // here eno1 is the name of network we are on
 
-Docker on the robots may take a while to come up. You can ssh into the raspberry pi on the robot, and check with "docker ps" if things are up and running
+Docker on the robots may take a while to come up. You can ssh into the raspberry pi on the robot (ssh pi@IP), and check with "docker ps" if things are up and running
 
 2. To listen in on data coming from the robots, run the following
 > python3 -m vizier.vizier --host #HOST_IP --get #ROBOT_NUMBER/status //CHECK STATUS OF TEST ROBOT

@@ -18,7 +18,7 @@ Main components:
 	```
 	sudo dd BS=4M if=/path/to/image.iso of=/dev/disk status=progress conv=fdatasync
 	```
-	
+
 2. Install Ubuntu; minimal installation with 3rd party stuffs
 
 
@@ -27,14 +27,14 @@ Main components:
 1. Authorize the router  
 	1.   
 
-2. Router setup as usual 
+2. Router setup as usual
 
 
 ## Robotarium Network
 
 1. Set workstation to static IP address, turn off automatic DNS
 	```
-	IP 		= 	192.168.1.8 
+	IP 		= 	192.168.1.8
 	Netmask 	= 	255.255.255.0
 	Gateway 	= 	192.168.1.1
 	DNS 		=  	8.8.8.8, 208.67.222.222
@@ -57,7 +57,7 @@ Main components:
 	```
 	mkdir ~/git
 	mkdir ~/software
-	mkdir ~/user_code 
+	mkdir ~/user_code
 	```
 
 2. Install Docker
@@ -76,7 +76,7 @@ Main components:
 	git clone https://github.com/robotarium/mqtt_broker
 	git clone https://github.com/robotarium/tag_tracker  
 	git clone https://github.com/robotarium/python_tag_tracker
-	git clone https://github.com/robotarium/matlab-java-client
+	git clone https://github.com/robotarium/vizier_java
 	git clone https://github.gatech.edu/pglotfelter6/robotarium_matlab_docker  
 	git clone https://github.gatech.edu/pglotfelter6/robotarium_matlab_backend
 	git clone https://github.gatech.edu/pglotfelter6/matlab_node
@@ -99,8 +99,7 @@ Main components:
 	cd ~/git/vizier
 	python3 -m pip install -e .
 	```
-	
-	Test: 
+	Test:
 
 	1. Turn a robot and wait; if the MQTT broker is running then
 
@@ -132,12 +131,12 @@ Main components:
 		```
 		sudo docker_run_base.sh '/home/robotarium/software/matlab'
 		```
-		
+
 	55. In the docker container do the following:
 
 		```
 		cd /matlab
-		./install	
+		./install
 		```
 	6. Go through the install; must include Optimization
 	66. Enable symbolic links
@@ -156,9 +155,9 @@ Main components:
 		Copy container ID  
 
 		```
-		sudo docker commit DockerIDgoesHere robotarium:matlab	
-		``` 
-	10. To run: 
+		sudo docker commit DockerIDgoesHere robotarium:matlab
+		```
+	10. To run:
 		```
 		cd ~/git/robotarium_matlab_docker
 		./docker_run.sh
@@ -180,7 +179,7 @@ Main components:
 	cd ~/git/robotarium_matlab_docker  
 	./docker_run.sh  
 	```
-	
+
 	Launch matlab
 
 	```
@@ -190,10 +189,10 @@ Main components:
 8. Vizier implementation in java for MATLAB (default included in `robotarium_matlab_backend`, use this for updates):
 
 	```
-	cd ~/git/matlab-java-client
+	cd ~/git/vizier_java
 	./build.sh
 	cd ./target
- 	cp *.jar ~/git/matlab_node/vizier_java.jar	
+ 	cp *.jar ~/git/matlab_node/vizier_java.jar
 	cd ~/git/matlab_node/
 	```
 
@@ -213,7 +212,7 @@ Main components:
 
 		```
 		cd ~/git/python_tag_tracker/docker
-		./docker_build.sh
+		./docker_build.sh 192.168.1.8 1884
 		```
 
 		Test it with:
@@ -225,7 +224,7 @@ Main components:
 10. Python Backend Setup  
 
 	1. Prior to Install    
-		
+
 		```
 		cd ~/git/robotarium_python_backend
 		cd robotarium-python-simulator  
@@ -235,18 +234,18 @@ Main components:
 		cd ../
 		./run_before_install.sh
 		```
-		
+
 	2. Install
-		
+
 		```
 		cd ./robotarium_python_simulator
 		python3 -m pip install -e .
-		```	
+		```
 
 # Startup Procedure
 
 
-# TODO 
+# TODO
 
 ## Git
 
@@ -258,15 +257,18 @@ Main components:
 
 ## Workstation
 
-1. Launch broker on startup. 
+1. Launch broker on startup.
 
 
 ## Instructions
 
 1. Vicon instructions
 2. Add tests to each section
-3. Organize sections into primary components 
+3. Organize sections into primary components
 
 ## QOL
 
 1. Make it easy to change host ip in everything
+
+## Python Simulator
+1. Add the installation of python tkinter (sudo apt-get install python3-tk into setup.py
