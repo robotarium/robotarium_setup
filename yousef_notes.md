@@ -30,10 +30,10 @@
 - Run “xhost +” before running the container  to be able to bring up GUIs
 - Make sure you are connected
     - Wifi: Wired Connection 1, Wired Connection 2, robotarium api.
-    - Check if config to check the correct wireless IP address is up (look for wlp5s0) by running “ifconfig”. IP should be 192.168.1.8
+    - Check if config to check the correct wireless IP address is up (look for wlp5s0) by running ``ifconfig``. IP should be 192.168.1.8
 - Make sure that the correct docker containers are on
-    - To see a list of the docket containers that are on run “sudo docker ps -a”
-    - To restart a docker container run “sudo docker restart <insert id>”
+    - To see a list of the docket containers that are on run ``sudo docker ps -a``
+    - To restart a docker container run ``sudo docker restart <insert id>``
     - The dockers that should be on are the vicon_tracker, emqtt, robotarium_base_node.
 
 ### Running User Experiments:
@@ -43,8 +43,8 @@
     - Uncomment last bit of last line in ``automatic_run.py (-exp_id $1) and use Command is: ./docker_run.sh``
 
 ### Shutdown:
-- From desktop in git/gritsbot_2/interfacing run: ./shutdown_robots.sh
-- sudo python3 get_ip_by_mac.py ../../power_distribution/config/mac_list.json wlp5s0 -c “sudo shutdown now”
+- From desktop in git/gritsbot_2/interfacing run: ``./shutdown_robots.sh``
+- ``sudo python3 get_ip_by_mac.py ../../power_distribution/config/mac_list.json wlp5s0 -c “sudo shutdown now”``
 - Turn off the robots
 - Then then red knobs under the windows
 - Turn off projector
